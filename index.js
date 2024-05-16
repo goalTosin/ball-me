@@ -69,20 +69,20 @@ addEventListener("keyup", keyed);
 const mouse = {};
 
 // function to compensate for the css centered canvas
-function getMouseRelateiveToCanvas(ex, ey) {
+function getMouseRelativeToCanvas(ex, ey) {
   return {
     x: ((ex - cbound.x) / cbound.width) * 1200 + scrollX,
     y: ((ey - cbound.y) / cbound.height) * 600 + scrollY,
   };
 }
 addEventListener("mousemove", (e) => {
-  let p = getMouseRelateiveToCanvas(e.clientX, e.clientY);
+  let p = getMouseRelativeToCanvas(e.clientX, e.clientY);
   mouse.x = p.x;
   mouse.y = p.y;
 });
 // for mobile support
 addEventListener("touchmove", (e) => {
-  let p = getMouseRelateiveToCanvas(
+  let p = getMouseRelativeToCanvas(
     e.changedTouches[0].clientX,
     e.changedTouches[0].clientY
   );
@@ -129,7 +129,7 @@ function detectBallBoxCollision(
 const playerSize = 10;
 const goalPostWidth = 30;
 const goalPostHeight = 100;
-const training = { in_progress: true, data: [] };
+const training = { in_progress: false , data: { training: [], input: true, index: 0 } };
 
 let player1X = playerSize * 2;
 let player1Y = canvas.height / 2;
@@ -160,12 +160,16 @@ function draw(dt) {
   ctx.moveTo(player1X, player1Y);
   ctx.lineTo(mouse.x, mouse.y);
   ctx.strokeStyle = "green";
-  // ctx.lineWidth = 2
+  ctx.lineWidth = 2;
   ctx.stroke();
 
   // Draw Scores
   ctx.fillStyle = "blue";
   ctx.font = "40px system-ui";
+  ctx.shadowColor = "#00000080";
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 2;
+  ctx.shadowBlur = 2;
   ctx.fillText(player1Score, 10, 100);
   const t = ctx.measureText(player2Score);
   ctx.fillText(player2Score, canvas.width - t.width - 10, 100);
@@ -215,11 +219,67 @@ function draw(dt) {
     player1VY = (mouse.y - player1Y) * drag + player1VY * spring;
 
     if (training.in_progress) {
-      training.data.push({
-        input: [player2X / 1200, player2Y / 600, player2VX / 100, player2VY / 100],
-        output: [player1X / 1200, player1Y / 600, player1VX / 100, player1VY / 100],
+      training.data.training.push({
+        inputs: [
+          player2X / 1200,
+          player2Y / 600,
+          player2VX / 100,
+          player2VY / 100,
+          Math.abs(player2X - 0) / 1200, // normallized distanceX from goal post to player2
+          Math.abs(player2Y - canvas.height / 2) / 600, // normallized distanceY from goal post to player2
+        ],
+        outputs: [
+          -player1VX / 100,
+          -player1VY / 100,
+        ],
       });
     }
+
+    // use Ai to control the opponent
+    if (!training.in_progress) {
+      const air = computerOpp.activate([
+        player1X / 1200,
+        player1Y / 600,
+        player1VX / 100,
+        player1VY / 100,
+        Math.abs(player1X - 0) / 600, // normallized distanceX from goal post to player2
+        Math.abs(player1Y - canvas.height / 2) / 600, // normallized distanceY from goal post to player2
+      ])
+    player2VX = air[0] * 100
+    player2VY = air[1] * 100
+  }
+
+    // if (training.in_progress) {
+    //   if (training.data.input) {
+    //     training.data.training[training.data.index] = {
+    //       input: [
+    //         player2X / 1200,
+    //         player2Y / 600,
+    //         player2VX / 100,
+    //         player2VY / 100,
+    //         Math.abs(player2X - 0) / 1200, // normallized distanceX from goal post to player2
+    //         Math.abs(player2Y - canvas.height / 2) / 1200, // normallized distanceY from goal post to player2
+    //       ],
+    //     };
+    //     training.data.index += training.data.training.length;
+    //     if (training.data.index >= 100) {
+    //       training.data.input = false;
+    //       training.data.index = 0;
+    //     }
+    //   } else {
+    //     training.data.training[training.data.index] = {
+    //       output: [
+    //         player1X / 1200,
+    //         player1Y / 600,
+    //         player1VX / 100,
+    //         player1VY / 100,
+    //         Math.abs(canvas.width - player1X) / 1200, // normallized distanceX from goal post to player1
+    //         Math.abs(player1Y - canvas.height / 2) / 1200, // normallized distanceY from goal post to player1
+    //       ],
+    //     };
+    //     training.data.index += training.data.training.length;
+    //   }
+    // }
   }
 
   function dist2(x0, y0, x1, y1) {

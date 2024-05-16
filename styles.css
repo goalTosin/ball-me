@@ -1,0 +1,33 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+#game-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+#game-area {
+  max-width: 100vw;
+  max-height: 100vh;
+  aspect-ratio: 1200 / 600;
+}
+canvas {
+  /* border: 2px solid black; */
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(247, 247, 247);
+  touch-action: none;
+}
+#h {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 10px;
+  width: 100%;
+  background-color: red;
+}

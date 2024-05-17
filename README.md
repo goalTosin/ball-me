@@ -4,7 +4,7 @@ A simple ball me game with the goal of entering the opponent's goal post as a ba
 # play now
 Instant play coming right up...
 
-[Play now!](https://github.com/goalTosin)
+[Play now!](https://goaltosin.github.io/ball-me/)
 
 # games
 Check out my other games [here](https://github.com/goalTosin?tab=repositories)

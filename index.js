@@ -129,7 +129,7 @@ function detectBallBoxCollision(
 const playerSize = 10;
 const goalPostWidth = 30;
 const goalPostHeight = 100;
-const training = { in_progress: false , data: { training: [], input: true, index: 0 } };
+const training = { in_progress: true, data: { training: [], index: 0 } };
 
 let player1X = playerSize * 2;
 let player1Y = canvas.height / 2;
@@ -228,10 +228,7 @@ function draw(dt) {
           Math.abs(player2X - 0) / 1200, // normallized distanceX from goal post to player2
           Math.abs(player2Y - canvas.height / 2) / 600, // normallized distanceY from goal post to player2
         ],
-        outputs: [
-          -player1VX / 100,
-          -player1VY / 100,
-        ],
+        outputs: [-player1VX / 100, -player1VY / 100],
       });
     }
 
@@ -244,10 +241,10 @@ function draw(dt) {
         player1VY / 100,
         Math.abs(player1X - 0) / 600, // normallized distanceX from goal post to player2
         Math.abs(player1Y - canvas.height / 2) / 600, // normallized distanceY from goal post to player2
-      ])
-    player2VX = air[0] * 100
-    player2VY = air[1] * 100
-  }
+      ]);
+      player2VX = air[0] * 100;
+      player2VY = air[1] * 100;
+    }
 
     // if (training.in_progress) {
     //   if (training.data.input) {

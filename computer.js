@@ -24,6 +24,6 @@ async function trainComp() {
   const data = await fetch('./train.json')
   const train = await data.json()
   // console.log(train);
-  computerOpp.train(500, train);
+  computerOpp.train(10, train);
 }
 trainComp()

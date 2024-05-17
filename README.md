@@ -1,5 +1,5 @@
 # ball-me
-A simple ball me game with the goal of entering the opponent's goal post as a ball
+A simple "ball me" game with the goal of entering the opponent's goal post as a ball
 
 # play now
 Instant play coming right up...
